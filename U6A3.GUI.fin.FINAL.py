@@ -1,6 +1,6 @@
 from tkinter import *
 import time
-import datetime##import nesecary libraries
+import datetime##import nessecary libraries
 
 root = Tk()##instancing the tkinter class 
 root.geometry('470x320')##sets window dimensions
