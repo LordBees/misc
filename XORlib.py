@@ -1,87 +1,157 @@
 ##xorcrypt
-def xxt():
-    kxtst()
-    xt()
-    
-def xt():
+
+
+
+k='key'
+m='test'
+
+def tf():
     k='key'
     m='test'
-    #m = 'test String'
-    t = xor(k,xor(k,m),forward = False)
-    print('\n\n\n\nRESULT:\n\n')
-    return t
-###THE % MUST BE -1 as key not rotating completely!!
-def xor(k,m,forward=True):##forward  is encrypt, backwards is decrypt
-    print('key = '+str(k))
-    print('m = '+str(m))
-    cryptbuff = ''
-    cryptbuff2 = []
-    out = ''
-    if forward:##xor
+    return xor_t(k,xor_t(k,m),decrypt = True)
+
+def xor_t(k,m,decrypt = False,arrayform=False):
+    print([k,m,decrypt,arrayform])
+    datb = ''##databuffer
+    datab = []##dataarraybuffer
+    if arrayform:##decrypts line by line 
+        tempa = []
+        for part in m:
+            tempa.append(xor_t(k,part),decrypt)
+        return tempa
+
+    
+    if decrypt:##decrypt xor prep
+        for x in range(0,len(m),2):
+            datab.append(int(m[x]+m[x+1],16))## changes the hex pair to base 10 int redy for xor'ing
+        print('d')
+    else:##encrypt xor prep
         for x in range(len(m)):
-            print('\n\n========'+str(x))
-            print(str(ord(m[x]))+'^'+str(ord(k[x%len(k)])))
-            print(hex(ord(m[x])^ord(k[x%len(k)])))
+            datab.append(ord(m[x]))
 
-            if len(hex(ord(m[x])^ord(k[x%len(k)]))[2:].upper())<2:
-                cryptbuff +=hex(ord(m[x])^ord(k[x%len(k)]))[2:].upper()
-                cryptbuff = '0' + cryptbuff##swapped zero as pos was causing prob with 3rd lttr for some reason  old = cryptbuff+='0'
-            else:
-                cryptbuff +=hex(ord(m[x])^ord(k[x%len(k)]))[2:].upper()##ascii values turned into hex and 0x chopped
-            print('cb:'+cryptbuff)
-        print('encrypted out:\n'+str(cryptbuff))
-        out = cryptbuff
-        cryptbuff = ''
-        cryptbuff2 = []
             
-    else:##decrypting
-        ##int(hexthing,0) for guessing prefix
-        ##decrypting and converts to ascii code for xoring then rtns letterstream
-        for x in range(0,len(m)-1,2):
-            cryptbuff +=m[x]+m[x+1]
-            print('cryptoval_hexbayte_raw = '+str(cryptbuff))
-            if str(cryptbuff) == '0' or str(cryptbuff) == '00':
-                cryptbuff == 0#'00'#
-            else:
-                cryptbuff = (int(cryptbuff,16))
-            cryptbuff2.append(cryptbuff)#('0x' + cryptbuff)
-            print('cryptovalint = '+str(cryptbuff))
-            cryptbuff=''
-##            if len(cryptbuff) == 2:
-##                cryptbuff2.append('0x' + cryptbuff)
-##                cryptbuff = ''
-##                cryptbuff+=m[x]
-##            else:
-##                cryptbuff+=m[x]
-##            cryptbuff2.append('0x' + cryptbuff)
-##
-            print('cryptobuffer_STR = :',cryptbuff,'\n crypto array\n',cryptbuff2)
-            #out = cryptbuff2
-            
-        cryptbuff = ''
-        for x in range(len(cryptbuff2)):##stitcher code for concat msg as cryptbuff = output str
-            cryptbuff2[x] = int(cryptbuff2[x])^ord(k[x%len(k)])##xoring byte pair intified with key
-            print('XOR:'+str(cryptbuff2[x])+'^'+str(ord(k[x%len(k)]))+'|'       +chr(cryptbuff2[x])+'^'+str(k[x%len(k)]))
-            cryptbuff += chr(cryptbuff2[x])
-
-        out = cryptbuff
-        cryptbuff = ''
-        cryptbuff2 = []
-            
-    return out
-
-
-def kxtst():
-    for x in range(4):
-        t = 'test'
-        print(ord(t[x]))
-    print('\n')
-    for x in range(3):
-        k = 'key'
-        print(ord(k[x]))
-            
-            
+    ##actual xor code
+    print('passed:',datab)
+    for item in range(len(datab)):
+        print('\n\n========'+str(item))
+        print('XOR:'+str(datab[item])+'|'+str(ord(k[item%(len(k)-1)]))+' = '+str(datab[item]^ord(k[item%(len(k)-1)])))
+        datab[item] = datab[item]^ord(k[item%(len(k)-1)])##xor rotating the -1 as the array starts at zero
         
+    print(datab)
+    ##end xor code
+
+    #hex prefix stripper and formatter(rtrn string)
+    if decrypt:
+        for x in datab:
+            datb +=chr(x)
+    else:
+        for x in datab:
+            print('~~~~~~~~ PAIR|'+str(x))
+            if len(str(x)) == 1:
+                print('padding:',x)
+                datb += '0' +str(hex(x)[2:].upper())
+            else:
+                datb += str(hex(x)[2:].upper())
+    print(datb)
+    print('DONE')
+    return datb
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+##def xxt():
+##    kxtst()
+##    xt()
+##    
+##def xt():
+##    k='key'
+##    m='test'
+##    #m = 'test String'
+##    t = xor(k,xor(k,m),forward = False)
+##    print('\n\n\n\nRESULT:\n\n')
+##    return t
+#####THE % MUST BE -1 as key not rotating completely!!
+##def xor(k,m,forward=True):##forward  is encrypt, backwards is decrypt
+##    print('key = '+str(k))
+##    print('m = '+str(m))
+##    cryptbuff = ''
+##    cryptbuff2 = []
+##    out = ''
+##    if forward:##xor
+##        for x in range(len(m)):
+##            print('\n\n========'+str(x))
+##            print(str(ord(m[x]))+'^'+str(ord(k[x%len(k)])))
+##            print(hex(ord(m[x])^ord(k[x%len(k)])))
+##
+##            if len(hex(ord(m[x])^ord(k[x%len(k)]))[2:].upper())<2:
+##                cryptbuff +=hex(ord(m[x])^ord(k[x%len(k)]))[2:].upper()
+##                cryptbuff = '0' + cryptbuff##swapped zero as pos was causing prob with 3rd lttr for some reason  old = cryptbuff+='0'
+##            else:
+##                cryptbuff +=hex(ord(m[x])^ord(k[x%len(k)]))[2:].upper()##ascii values turned into hex and 0x chopped
+##            print('cb:'+cryptbuff)
+##        print('encrypted out:\n'+str(cryptbuff))
+##        out = cryptbuff
+##        cryptbuff = ''
+##        cryptbuff2 = []
+##            
+##    else:##decrypting
+##        ##int(hexthing,0) for guessing prefix
+##        ##decrypting and converts to ascii code for xoring then rtns letterstream
+##        for x in range(0,len(m)-1,2):
+##            cryptbuff +=m[x]+m[x+1]
+##            print('cryptoval_hexbayte_raw = '+str(cryptbuff))
+##            if str(cryptbuff) == '0' or str(cryptbuff) == '00':
+##                cryptbuff == 0#'00'#
+##            else:
+##                cryptbuff = (int(cryptbuff,16))
+##            cryptbuff2.append(cryptbuff)#('0x' + cryptbuff)
+##            print('cryptovalint = '+str(cryptbuff))
+##            cryptbuff=''
+####            if len(cryptbuff) == 2:
+####                cryptbuff2.append('0x' + cryptbuff)
+####                cryptbuff = ''
+####                cryptbuff+=m[x]
+####            else:
+####                cryptbuff+=m[x]
+####            cryptbuff2.append('0x' + cryptbuff)
+####
+##            print('cryptobuffer_STR = :',cryptbuff,'\n crypto array\n',cryptbuff2)
+##            #out = cryptbuff2
+##            
+##        cryptbuff = ''
+##        for x in range(len(cryptbuff2)):##stitcher code for concat msg as cryptbuff = output str
+##            cryptbuff2[x] = int(cryptbuff2[x])^ord(k[x%len(k)])##xoring byte pair intified with key
+##            print('XOR:'+str(cryptbuff2[x])+'^'+str(ord(k[x%len(k)]))+'|'       +chr(cryptbuff2[x])+'^'+str(k[x%len(k)]))
+##            cryptbuff += chr(cryptbuff2[x])
+##
+##        out = cryptbuff
+##        cryptbuff = ''
+##        cryptbuff2 = []
+##            
+##    return out
+##
+##
+##def kxtst():
+##    for x in range(4):
+##        t = 'test'
+##        print(ord(t[x]))
+##    print('\n')
+##    for x in range(3):
+##        k = 'key'
+##        print(ord(k[x]))
+##            
+##            
+##        
 
 ##    temp = ''
 ##    for x in range(len(m)):
@@ -93,21 +163,21 @@ def kxtst():
 ##    print(temp)
 ##    return temp
 
-def xorA(k,m):#arrays
-    tempa = []
-    for part in m:
-        tempa.append(xor(k,part))
-    return tempa
-
-def Dxor(k,m):
-    pass
-
-def DxorA(k,m):#arrays
-    tempa = []
-    for part in m:
-        tempa.append(Dxor(k,part))
-    return tempa
-
+####def xorA(k,m):#arrays
+####    tempa = []
+####    for part in m:
+####        tempa.append(xor(k,part))
+####    return tempa
+####
+####def Dxor(k,m):
+####    pass
+####
+####def DxorA(k,m):#arrays
+####    tempa = []
+####    for part in m:
+####        tempa.append(Dxor(k,part))
+####    return tempa
+####
 
 
 
