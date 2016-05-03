@@ -10,6 +10,11 @@ def tf():
     m='test'
     return xor_t(k,xor_t(k,m),decrypt = True)
 
+def tfa():
+    k='key'
+    x = xor_t(k,['this','should','work','and','return'],arrayform = True)
+    return xor_t(k,x,arrayform = True,decrypt = True)
+    
 def xor_t(k,m,decrypt = False,arrayform=False):
     print([k,m,decrypt,arrayform])
     datb = ''##databuffer
@@ -17,7 +22,7 @@ def xor_t(k,m,decrypt = False,arrayform=False):
     if arrayform:##decrypts line by line 
         tempa = []
         for part in m:
-            tempa.append(xor_t(k,part),decrypt)
+            tempa.append(xor_t(k,part,decrypt))
         return tempa
 
     
@@ -46,8 +51,8 @@ def xor_t(k,m,decrypt = False,arrayform=False):
             datb +=chr(x)
     else:
         for x in datab:
-            print('~~~~~~~~ PAIR|'+str(x))
-            if len(str(x)) == 1:
+            print('~~~~~~~~ PAIR|'+str(x)+'\nLEN = '+str(len(str(x)))+'\n')
+            if len(str(hex(x)[2:])) == 1:
                 print('padding:',x)
                 datb += '0' +str(hex(x)[2:].upper())
             else:
